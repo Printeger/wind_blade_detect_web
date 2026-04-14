@@ -104,5 +104,6 @@ Swagger 文档：http://127.0.0.1:8000/docs
 ### 前后端联调
 1. 前端“接口与设置”页填入后端 `API_BASE`（例如 `https://your-api-domain.com`）
 2. 后端 `.env` 设置：
-   - `CORS_ALLOW_ORIGINS=https://printeger.github.io`
+   - `CORS_ALLOW_ORIGINS=https://你的用户名.github.io`
+   - 注意：即使页面地址是 `https://你的用户名.github.io/wind_blade_detect_web/`，CORS 也只填写域名（不带仓库路径）
 3. 刷新页面并执行一次单图检测，确认接口请求与页面交互正常
