@@ -97,11 +97,7 @@ uvicorn app:app --host 0.0.0.0 --port 8000 --reload
 CORS_ALLOW_ORIGINS=https://你的用户名.github.io
 ```
 
-本地联调也可以暂时使用：
-
-```env
-CORS_ALLOW_ORIGINS=*
-```
+> 说明：即使 Pages 访问地址是 `https://你的用户名.github.io/仓库名/`，`CORS_ALLOW_ORIGINS` 也只填写源域名 `https://你的用户名.github.io`（不要带仓库路径）。
 
 ### 前端 `API_BASE`
 在前端“接口与设置”页里填：

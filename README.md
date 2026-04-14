@@ -72,3 +72,39 @@ uvicorn app:app --host 0.0.0.0 --port 8000 --reload
 Swagger 文档：http://127.0.0.1:8000/docs
 
 如果你要和 GitHub Pages 前端联调，记得把 .env 里的 CORS_ALLOW_ORIGINS 改成你的 Pages 域名，或者本地联调时先用 *。
+
+---
+
+## GitHub Pages 部署（frontend）
+
+本仓库已新增自动部署工作流：  
+`.github/workflows/deploy-pages.yml`
+
+部署边界：
+- GitHub Pages 只部署 `frontend` 静态页面
+- `backend` 继续独立部署（不能部署到 GitHub Pages）
+
+自动发布规则：
+- `main` 分支有 `frontend/**` 变更时自动触发
+- `.github/workflows/deploy-pages.yml` 变更时也会触发（用于验证工作流自身）
+- 也支持手动触发（workflow_dispatch）
+- 发布目标地址：`https://your-username.github.io/your-repo-name/`
+
+### 仓库设置（需要在 GitHub 网页端操作）
+1. 进入 `Settings` → `Pages`
+2. `Build and deployment` 的 `Source` 选择 **GitHub Actions**
+3. 确认仓库 Actions 权限允许工作流运行与部署 Pages
+
+### 首次发布后检查
+- 首页可访问：`https://your-username.github.io/your-repo-name/`
+- 资源加载正常：
+  - `styles.css`
+  - `assets/polyu-logo.png`
+  - `app.js`
+
+### 前后端联调
+1. 前端“接口与设置”页填入后端 `API_BASE`（例如 `https://your-api-domain.com`）
+2. 后端 `.env` 设置：
+   - `CORS_ALLOW_ORIGINS=https://your-username.github.io`
+   - 注意：即使页面地址是 `https://your-username.github.io/your-repo-name/`，CORS 也只填写域名（不带仓库路径）
+3. 刷新页面并执行一次单图检测，确认接口请求与页面交互正常
