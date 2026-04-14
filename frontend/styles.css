@@ -206,10 +206,6 @@ textarea { resize: vertical; }
 }
 .placeholder-image.large { min-height: 420px; }
 .placeholder-image img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 16px; }
-.placeholder-image.overlay::after {
-  content: "接入真实推理后，此处可直接显示后端返回的 result_image_url"; position: absolute; bottom: 14px; left: 14px; right: 14px;
-  padding: 9px 12px; border-radius: 10px; background: rgba(255,255,255,.88); color: #5e4f56; font-size: 13px;
-}
 .pane-caption { color: var(--muted); font-size: 13px; }
 .bbox {
   position: absolute; border: 2px solid var(--primary); border-radius: 8px; background: rgba(160, 29, 56, .08); color: var(--primary-dark); padding: 3px 6px; font-size: 12px; font-weight: 700;
