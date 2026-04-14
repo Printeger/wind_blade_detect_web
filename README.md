@@ -1,110 +1,213 @@
-前端结构改成更适合 GitHub Pages + FastAPI 的形式
-预留并接入了可配置的接口位：
-POST /api/predict
-POST /api/predict-batch
-GET /api/tasks/{task_id}
-GET /api/health
-新增了 接口与设置 页面，可以直接填写 API_BASE，并把配置保存到浏览器 localStorage
-单张检测页已经写好了前端调用逻辑：
-如果 FastAPI 可访问，就调用真实接口；如果没接通，就自动回退到演示数据
-批量检测页也保留了任务接口位置，方便你后面接异步任务
+# 风机缺陷检测 Web 平台
 
-你后面接后端时，最关键的是让 FastAPI 返回这些字段：
+本仓库提供一个可落地的风机缺陷检测 Web 方案，采用前后端解耦架构：
 
-task_id
-detections
-inference_time
-result_image_url
+- 前端：静态站点（适配 GitHub Pages）
+- 后端：FastAPI 推理服务
+- 推理后端：`mock`、`ultralytics`、`roboflow`
 
-这样这个前端基本不用再改结构，只需要把真实接口接上就能跑。
+平台覆盖单图检测、批量检测、任务查询与结果展示，适合课程项目、实验室演示、算法联调与工程化过渡。
 
-和这个前端接口一一对应的 FastAPI 后端骨架在这里：
-这版已经包含：
+## 主要能力
 
-GET /api/health
-POST /api/predict
-POST /api/predict-batch
-GET /api/tasks
-GET /api/tasks/{task_id}
-/outputs/... 结果图静态访问
+- 单张检测：`POST /api/predict`
+- 批量检测（后台任务）：`POST /api/predict-batch`
+- 任务列表与详情：`GET /api/tasks`、`GET /api/tasks/{task_id}`
+- 服务状态检查：`GET /api/health`
+- 结果图静态访问：`/outputs/...`
+- 前端支持配置 `API_BASE` 与接口路径（保存在浏览器 `localStorage`）
+- 请求级推理后端覆盖（`provider` 字段）
 
-并且接口字段和你前端已经预留的调用方式对齐，单张检测返回这些关键字段：
+## 系统架构
 
-task_id
-filename
-model_name
-inference_time
-num_detections
-detections
-result_image_url
-created_at
+```text
+GitHub Pages（frontend 静态页面）
+       |
+       | HTTP
+       v
+FastAPI（/api/*）
+       |
+       +-- mock（演示用）
+       +-- ultralytics（本地 .pt）
+       +-- roboflow（托管推理）
+```
 
-后端目录结构也已经搭好，包括：
+## 仓库结构
 
-app.py
-requirements.txt
-.env.example
-README.md
-app/config.py
-app/schemas.py
-app/main.py
-app/api/routes.py
-app/services/inference.py
-app/services/task_manager.py
+```text
+wind_blade_detect_web/
+├── .github/workflows/
+│   └── deploy-pages.yml
+├── frontend/
+│   ├── index.html
+│   ├── app.js
+│   ├── styles.css
+│   └── assets/
+└── backend/
+  ├── app.py
+  ├── requirements.txt
+  ├── .env.example
+  ├── data/
+  │   ├── uploads/
+  │   └── outputs/
+  ├── weights/
+  └── app/
+    ├── main.py
+    ├── config.py
+    ├── schemas.py
+    ├── api/routes.py
+    └── services/
+      ├── inference.py
+      └── task_manager.py
+```
 
-这版支持两种模式：
+## 快速开始
 
-mock 演示模式
-不需要真实模型，也能先把前后端联调打通。
-Ultralytics YOLO .pt 模型模式
-把你的模型放到 weights/best.pt，把 .env 里的 MODEL_BACKEND 改成 ultralytics 就能接真实推理。
+### 1. 启动后端
 
-你接下来可以这样启动：
+环境要求：
 
-cd wind_defect_backend_fastapi
+- Python 3.10+
+
+```bash
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env
-uvicorn app:app --host 0.0.0.0 --port 8000 --reload
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+```
 
-启动后：
+启动后可访问：
 
-健康检查：http://127.0.0.1:8000/api/health
-Swagger 文档：http://127.0.0.1:8000/docs
+- API 根路径：http://127.0.0.1:8000/
+- 健康检查：http://127.0.0.1:8000/api/health
+- Swagger 文档：http://127.0.0.1:8000/docs
 
-如果你要和 GitHub Pages 前端联调，记得把 .env 里的 CORS_ALLOW_ORIGINS 改成你的 Pages 域名，或者本地联调时先用 *。
+### 2. 启动前端（本地预览）
 
----
+```bash
+cd frontend
+python3 -m http.server 5173
+```
 
-## GitHub Pages 部署（frontend）
+浏览器打开：
 
-本仓库已新增自动部署工作流：  
-`.github/workflows/deploy-pages.yml`
+- http://127.0.0.1:5173
+
+在“接口与设置”页将 `API_BASE` 设置为：
+
+- `http://127.0.0.1:8000`
+
+## API 约定
+
+### `GET /api/health`
+
+返回服务状态与后端信息：
+
+- `status`
+- `message`
+- `backend`
+- `default_model_name`
+- `active_model_path`
+- `available_backends`
+
+### `POST /api/predict`
+
+请求（FormData）：
+
+- `file`（必填）
+- `conf`（默认 `0.25`）
+- `iou`（默认 `0.45`）
+- `model_name`
+- `mode`
+- `provider`（`default` | `auto` | `mock` | `ultralytics` | `roboflow`）
+
+核心响应字段：
+
+- `task_id`
+- `filename`
+- `model_name`
+- `inference_backend`
+- `inference_time`
+- `num_detections`
+- `detections[]`
+- `result_image_url`
+- `created_at`
+
+### `POST /api/predict-batch`
+
+请求（FormData）：
+
+- `files[]`（必填）
+- `task_name`
+- `conf`
+- `iou`
+- `model_name`
+- `mode`
+- `provider`
+
+返回任务摘要（`task_id`、`status`、`progress` 等）。
+
+### `GET /api/tasks` 与 `GET /api/tasks/{task_id}`
+
+- 查询任务列表与批量任务详情。
+- 当前版本任务存储为内存态，服务重启后会清空。
+
+## 配置说明（`backend/.env`）
+
+关键配置项：
+
+- `MODEL_BACKEND=mock|ultralytics|roboflow`
+- `MODEL_PATH=weights/best.pt`
+- `AUTO_UPDATE_MODEL=true`
+- `MODEL_SEARCH_GLOB=../../runs/**/weights/best.pt`
+- `CORS_ALLOW_ORIGINS=*`（生产环境请收紧）
+- `ROBOFLOW_API_KEY=`
+- `ROBOFLOW_MODEL_ID=`
+
+推理模式建议：
+
+1. `mock`：无需真实模型，适合前后端联调。
+2. `ultralytics`：加载本地 `.pt`，适合本地验证与实验。
+3. `roboflow`：调用托管推理服务，适合云端快速接入。
+
+## GitHub Pages 部署（前端）
+
+仓库内已包含自动部署工作流：
+
+- `.github/workflows/deploy-pages.yml`
+
+触发规则：
+
+- `main` 分支下 `frontend/**` 发生变更
+- 工作流文件自身变更
+- 手动触发（`workflow_dispatch`）
 
 部署边界：
-- GitHub Pages 只部署 `frontend` 静态页面
-- `backend` 继续独立部署（不能部署到 GitHub Pages）
 
-自动发布规则：
-- `main` 分支有 `frontend/**` 变更时自动触发
-- `.github/workflows/deploy-pages.yml` 变更时也会触发（用于验证工作流自身）
-- 也支持手动触发（workflow_dispatch）
-- 发布目标地址：`https://your-username.github.io/your-repo-name/`
+- GitHub Pages 仅部署 `frontend/` 静态页面。
+- FastAPI 后端需独立部署（云服务器、容器平台等）。
 
-### 仓库设置（需要在 GitHub 网页端操作）
-1. 进入 `Settings` → `Pages`
-2. `Build and deployment` 的 `Source` 选择 **GitHub Actions**
-3. 确认仓库 Actions 权限允许工作流运行与部署 Pages
+## 生产化建议
 
-### 首次发布后检查
-- 首页可访问：`https://your-username.github.io/your-repo-name/`
-- 资源加载正常：
-  - `styles.css`
-  - `assets/polyu-logo.png`
-  - `app.js`
+- 将 `CORS_ALLOW_ORIGINS` 设置为精确来源，不建议长期使用 `*`。
+- 批量任务建议迁移到持久化队列（如 Celery/RQ + Redis）。
+- 推理与任务结果建议落库（SQLite/PostgreSQL）以便审计与追溯。
 
-### 前后端联调
-1. 前端“接口与设置”页填入后端 `API_BASE`（例如 `https://your-api-domain.com`）
-2. 后端 `.env` 设置：
-   - `CORS_ALLOW_ORIGINS=https://your-username.github.io`
-   - 注意：即使页面地址是 `https://your-username.github.io/your-repo-name/`，CORS 也只填写域名（不带仓库路径）
-3. 刷新页面并执行一次单图检测，确认接口请求与页面交互正常
+## 路线图
+
+- 任务与复核记录持久化
+- 报告导出（PDF/Excel）
+- 更健壮的异步任务架构
+- ONNX/TensorRT 推理后端支持
+
+## 贡献指南
+
+欢迎提交 Issue 与 PR。建议附上：
+
+- 复现步骤
+- 预期结果与实际结果
+- 环境信息（操作系统、Python 版本、后端模式）
+
+
