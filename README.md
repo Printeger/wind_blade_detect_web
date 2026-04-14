@@ -78,7 +78,7 @@ Swagger 文档：http://127.0.0.1:8000/docs
 ## GitHub Pages 部署（frontend）
 
 本仓库已新增自动部署工作流：  
-`/home/runner/work/wind_blade_detect_web/wind_blade_detect_web/.github/workflows/deploy-pages.yml`
+`.github/workflows/deploy-pages.yml`
 
 部署边界：
 - GitHub Pages 只部署 `frontend` 静态页面
