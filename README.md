@@ -86,6 +86,7 @@ Swagger 文档：http://127.0.0.1:8000/docs
 
 自动发布规则：
 - `main` 分支有 `frontend/**` 变更时自动触发
+- `.github/workflows/deploy-pages.yml` 变更时也会触发（用于验证工作流自身）
 - 也支持手动触发（workflow_dispatch）
 - 发布目标地址：`https://your-username.github.io/your-repo-name/`
 
