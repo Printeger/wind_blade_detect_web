@@ -1,0 +1,66 @@
+# -----------------------------
+# Python cache / env
+# -----------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+
+# -----------------------------
+# Runtime logs / temp
+# -----------------------------
+*.log
+*.tmp
+*.swp
+.DS_Store
+
+# -----------------------------
+# Sensitive keys / certs
+# -----------------------------
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.der
+*.jks
+*.kdbx
+secrets/
+secret/
+**/secrets/
+**/secret/
+
+# files that may include api keys or tokens in filename
+*api_key*
+*apikey*
+*token*
+
+# -----------------------------
+# Project runtime data (do not upload)
+# -----------------------------
+backend/data/
+backend/data/**
+data/
+data/**
+outputs/
+outputs/**
+uploads/
+uploads/**
+
+# If model weights are local-only, keep them out of git
+backend/weights/*.pt
+backend/weights/*.onnx
+backend/weights/*.engine
+backend/weights/*.bin
+
+# -----------------------------
+# Frontend build/runtime leftovers
+# -----------------------------
+frontend/.cache/
+frontend/dist/
+frontend/build/
