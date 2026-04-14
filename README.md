@@ -87,7 +87,7 @@ Swagger 文档：http://127.0.0.1:8000/docs
 自动发布规则：
 - `main` 分支有 `frontend/**` 变更时自动触发
 - 也支持手动触发（workflow_dispatch）
-- 发布目标地址：`https://你的用户名.github.io/你的仓库名/`
+- 发布目标地址：`https://your-username.github.io/your-repo-name/`
 
 ### 仓库设置（需要在 GitHub 网页端操作）
 1. 进入 `Settings` → `Pages`
@@ -95,7 +95,7 @@ Swagger 文档：http://127.0.0.1:8000/docs
 3. 确认仓库 Actions 权限允许工作流运行与部署 Pages
 
 ### 首次发布后检查
-- 首页可访问：`https://你的用户名.github.io/你的仓库名/`
+- 首页可访问：`https://your-username.github.io/your-repo-name/`
 - 资源加载正常：
   - `styles.css`
   - `assets/polyu-logo.png`
@@ -104,6 +104,6 @@ Swagger 文档：http://127.0.0.1:8000/docs
 ### 前后端联调
 1. 前端“接口与设置”页填入后端 `API_BASE`（例如 `https://your-api-domain.com`）
 2. 后端 `.env` 设置：
-   - `CORS_ALLOW_ORIGINS=https://你的用户名.github.io`
-   - 注意：即使页面地址是 `https://你的用户名.github.io/wind_blade_detect_web/`，CORS 也只填写域名（不带仓库路径）
+   - `CORS_ALLOW_ORIGINS=https://your-username.github.io`
+   - 注意：即使页面地址是 `https://your-username.github.io/your-repo-name/`，CORS 也只填写域名（不带仓库路径）
 3. 刷新页面并执行一次单图检测，确认接口请求与页面交互正常
