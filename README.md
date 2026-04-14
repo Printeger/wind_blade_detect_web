@@ -87,7 +87,7 @@ Swagger 文档：http://127.0.0.1:8000/docs
 自动发布规则：
 - `main` 分支有 `frontend/**` 变更时自动触发
 - 也支持手动触发（workflow_dispatch）
-- 发布目标地址：`https://你的用户名.github.io/你的仓库名/`（本仓库示例：`https://printeger.github.io/wind_blade_detect_web/`）
+- 发布目标地址：`https://你的用户名.github.io/你的仓库名/`
 
 ### 仓库设置（需要在 GitHub 网页端操作）
 1. 进入 `Settings` → `Pages`
