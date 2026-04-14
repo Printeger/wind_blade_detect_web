@@ -87,7 +87,7 @@ Swagger 文档：http://127.0.0.1:8000/docs
 自动发布规则：
 - `main` 分支有 `frontend/**` 变更时自动触发
 - 也支持手动触发（workflow_dispatch）
-- 发布目标地址：`https://printeger.github.io/wind_blade_detect_web/`
+- 发布目标地址：`https://你的用户名.github.io/你的仓库名/`（本仓库示例：`https://printeger.github.io/wind_blade_detect_web/`）
 
 ### 仓库设置（需要在 GitHub 网页端操作）
 1. 进入 `Settings` → `Pages`
@@ -95,7 +95,7 @@ Swagger 文档：http://127.0.0.1:8000/docs
 3. 确认仓库 Actions 权限允许工作流运行与部署 Pages
 
 ### 首次发布后检查
-- 首页可访问：`https://printeger.github.io/wind_blade_detect_web/`
+- 首页可访问：`https://你的用户名.github.io/你的仓库名/`
 - 资源加载正常：
   - `styles.css`
   - `assets/polyu-logo.png`
