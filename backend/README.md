@@ -94,14 +94,10 @@ uvicorn app:app --host 0.0.0.0 --port 8000 --reload
 ### `.env` 里建议设置 CORS
 
 ```env
-CORS_ALLOW_ORIGINS=https://你的用户名.github.io
+CORS_ALLOW_ORIGINS=https://printeger.github.io
 ```
 
-本地联调也可以暂时使用：
-
-```env
-CORS_ALLOW_ORIGINS=*
-```
+> 如果你只允许当前仓库 Pages 站点访问，域名仍写 `https://printeger.github.io`（不要带路径）。
 
 ### 前端 `API_BASE`
 在前端“接口与设置”页里填：
