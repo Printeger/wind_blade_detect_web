@@ -26,8 +26,8 @@ class Settings(BaseSettings):
 
     model_backend: str = "mock"
     model_path: str = "weights/best.pt"
-    auto_update_model: bool = True
-    model_search_glob: str = "../../runs/**/weights/best.pt"
+    auto_update_model: bool = False
+    model_search_glob: str = ""
     default_model_name: str = "baseline-yolo"
 
     roboflow_api_url: str = "https://serverless.roboflow.com"

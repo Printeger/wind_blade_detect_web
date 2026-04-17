@@ -53,7 +53,7 @@ uploads/
 uploads/**
 
 # If model weights are local-only, keep them out of git
-backend/weights/*.pt
+# backend/weights/*.pt
 backend/weights/*.onnx
 backend/weights/*.engine
 backend/weights/*.bin

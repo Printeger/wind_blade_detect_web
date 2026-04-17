@@ -43,6 +43,7 @@ wind_defect_backend_fastapi/
 ├── .env.example
 ├── README.md
 ├── weights/
+│   ├── best.pt
 │   └── .gitkeep
 ├── data/
 │   ├── uploads/
@@ -127,7 +128,7 @@ MODEL_BACKEND=mock
 - 适合先打通前后端联调
 
 ### 方式 B：接入 Ultralytics YOLO `.pt`
-1. 把模型放到：
+1. 模型统一放在 `backend` 内部：
 
 ```text
 weights/best.pt
@@ -138,24 +139,16 @@ weights/best.pt
 ```env
 MODEL_BACKEND=ultralytics
 MODEL_PATH=weights/best.pt
-AUTO_UPDATE_MODEL=true
-MODEL_SEARCH_GLOB=../../runs/**/weights/best.pt
+AUTO_UPDATE_MODEL=false
+MODEL_SEARCH_GLOB=
 DEFAULT_MODEL_NAME=baseline-yolo
 ```
 
 3. 重启服务
 
 说明：
-- 当 `AUTO_UPDATE_MODEL=true` 时，后端会在 `MODEL_PATH` 与 `MODEL_SEARCH_GLOB` 命中的候选 `.pt` 中自动选择最新修改时间的模型。
-- 适合你每次新训练完成后，直接让服务自动切到最新 `best.pt`（无需手工改路径）。
-
-如果你想直接使用当前仓库训练好的权重，也可以把 `MODEL_PATH` 指向训练产物，例如：
-
-```env
-MODEL_BACKEND=ultralytics
-MODEL_PATH=../../runs/detect/runs/wind_defect_train_r2_tune/weights/best.pt
-DEFAULT_MODEL_NAME=wind-defect-r2-tune
-```
+- 当前后端默认只读取 `backend/weights/best.pt`，不会再去 `backend` 目录外扫描 `runs/**/weights/best.pt`。
+- 如果你后面训练了新模型，直接替换 `weights/best.pt`，无需再改外部路径。
 
 ### 方式 C：接入 Roboflow 托管模型
 
