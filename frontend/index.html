@@ -168,7 +168,7 @@
               <label>推理后端
                 <select id="singleProviderSelect">
                   <option value="default">默认（后端配置）</option>
-                  <option value="ultralytics">本地 Ultralytics</option>
+                  <option value="ultralytics" selected>本地 Ultralytics</option>
                   <option value="roboflow">Roboflow</option>
                   <option value="mock">Mock 演示</option>
                 </select>
@@ -274,7 +274,7 @@
                 <label>风机编号<input type="text" value="WT-04" /></label>
                 <label>叶片编号<input type="text" value="Blade-A" /></label>
                 <label>模型版本<select id="batchModelSelect"><option>unified-b-4class-stratified</option><option>unified-b-4class</option><option>baseline-yolo</option></select></label>
-                <label>推理后端<select id="batchProviderSelect"><option value="default">默认（后端配置）</option><option value="ultralytics">本地 Ultralytics</option><option value="roboflow">Roboflow</option><option value="mock">Mock 演示</option></select></label>
+                <label>推理后端<select id="batchProviderSelect"><option value="default">默认（后端配置）</option><option value="ultralytics" selected>本地 Ultralytics</option><option value="roboflow">Roboflow</option><option value="mock">Mock 演示</option></select></label>
                 <label>置信度阈值<input type="number" id="batchConfInput" value="0.25" step="0.01" /></label>
                 <label>推理模式<select id="batchModeSelect"><option value="standard">普通模式</option><option value="sahi">高清切片模式</option></select></label>
               </div>

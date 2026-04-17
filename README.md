@@ -94,6 +94,7 @@ pyenv install 3.10.16
 pyenv local 3.10.16
 python -V
 ```
+启动后端：
 
 ```bash
 python -m venv .venv
@@ -110,6 +111,7 @@ python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
 启动后可访问：
 
+- 前端页面：https://printeger.github.io/wind_blade_detect_web/
 - API 根路径：http://127.0.0.1:8000/
 - 健康检查：http://127.0.0.1:8000/api/health
 - Swagger 文档：http://127.0.0.1:8000/docs

@@ -33,6 +33,14 @@ const DEFAULT_CONFIG = {
   }
 };
 
+const DEFAULT_PROVIDER = 'ultralytics';
+const PROVIDER_LABEL_MAP = {
+  default: '默认（后端配置）',
+  mock: 'Mock 演示',
+  ultralytics: '本地 Ultralytics',
+  roboflow: 'Roboflow'
+};
+
 const APP_STATE = {
   singleResult: null,
   batchFiles: [],
@@ -216,29 +224,23 @@ function updateServiceStatus(status, subtitle, online) {
 
 function renderProviderOptions(availableBackends, activeBackend) {
   const providers = Array.isArray(availableBackends) && availableBackends.length
-    ? [...new Set(availableBackends)]
-    : ['mock', 'ultralytics', 'roboflow'];
+    ? [...new Set([DEFAULT_PROVIDER, ...availableBackends.filter(item => item && item !== 'default')])]
+    : [DEFAULT_PROVIDER, 'mock', 'roboflow'];
 
   const allOptions = ['default', ...providers];
-  const labelMap = {
-    default: '默认（后端配置）',
-    mock: 'Mock 演示',
-    ultralytics: '本地 Ultralytics',
-    roboflow: 'Roboflow'
-  };
 
   ['singleProviderSelect', 'batchProviderSelect'].forEach(id => {
     const select = byId(id);
     if (!select) return;
     const previous = select.value;
     select.innerHTML = allOptions
-      .map(item => `<option value="${item}">${labelMap[item] || item}</option>`)
+      .map(item => `<option value="${item}">${PROVIDER_LABEL_MAP[item] || item}</option>`)
       .join('');
 
     if (allOptions.includes(previous)) {
       select.value = previous;
     } else {
-      select.value = 'default';
+      select.value = allOptions.includes(DEFAULT_PROVIDER) ? DEFAULT_PROVIDER : (activeBackend || 'default');
     }
   });
 
@@ -407,7 +409,7 @@ async function runSingleDetection() {
   formData.append('iou', byId('iouThreshold').value || '0.45');
   formData.append('model_name', byId('singleModelSelect').value);
   formData.append('mode', byId('singleModeSelect').value);
-  formData.append('provider', byId('singleProviderSelect')?.value || 'default');
+  formData.append('provider', byId('singleProviderSelect')?.value || DEFAULT_PROVIDER);
 
   try {
     const data = await fetchJson(getPredictUrl(), { method: 'POST', body: formData });
@@ -852,7 +854,7 @@ async function runBatchDetection() {
     formData.append('iou', '0.45');
     formData.append('model_name', byId('batchModelSelect').value || 'unified-b-4class-stratified');
     formData.append('mode', byId('batchModeSelect').value || 'standard');
-    formData.append('provider', byId('batchProviderSelect')?.value || 'default');
+    formData.append('provider', byId('batchProviderSelect')?.value || DEFAULT_PROVIDER);
 
     const summary = await fetchJson(getBatchUrl(), { method: 'POST', body: formData });
     APP_STATE.currentTaskId = summary.task_id;
@@ -883,6 +885,7 @@ function setupEventHandlers() {
   byId('resetSingleBtn').addEventListener('click', () => {
     byId('confThreshold').value = '0.25';
     byId('iouThreshold').value = '0.45';
+    byId('singleProviderSelect').value = DEFAULT_PROVIDER;
     renderSingleResults([]);
     renderSingleEmptyState('等待检测结果...');
     singleInferenceTime.textContent = '-';
