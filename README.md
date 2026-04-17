@@ -69,13 +69,43 @@ wind_blade_detect_web/
 
 - Python 3.10+
 
+if below python 3.10, please use pyenv to create a compatible environment.
+```
+cd ~
+
+sudo apt update
+sudo apt install -y make build-essential libssl-dev zlib1g-dev \
+  libbz2-dev libreadline-dev libsqlite3-dev curl git libncursesw5-dev \
+  xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev
+
+curl -fsSL https://pyenv.run | bash
+
+echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
+echo '[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
+echo 'eval "$(pyenv init - bash)"' >> ~/.bashrc
+
+echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.profile
+echo '[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.profile
+echo 'eval "$(pyenv init - bash)"' >> ~/.profile
+
+exec "$SHELL"
+
+pyenv install 3.10.16
+pyenv local 3.10.16
+python -V
+```
+
 ```bash
-cd backend
-python3 -m venv .venv
+python -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env
-uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+python -V
+which python
+
+python -m pip install --upgrade pip setuptools wheel
+python -m pip install -r requirements.txt
+
+python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 启动后可访问：
